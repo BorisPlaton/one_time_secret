@@ -73,5 +73,5 @@ async def get_user_secret(
     - **passphrase** - A passphrase that unlocks user's secret
 
     If all credentials are correct the service will return a user's
-    secret and deletes it from the database.
+    secret and deletes it from the tests_database.
     """
