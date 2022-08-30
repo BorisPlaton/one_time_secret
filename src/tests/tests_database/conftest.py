@@ -10,4 +10,4 @@ def secrets_collection():
     try:
         yield collection
     finally:
-        collection.secrets_collection.drop()
+        collection.collection.drop()

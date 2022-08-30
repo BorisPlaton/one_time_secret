@@ -53,6 +53,6 @@ class SecretKey(BaseModel):
     class Config:
         schema_extra = {
             'example': {
-                'secret_key': "iKpck5CgbcSJu8C9XdKHra1SWI8AR5hS"
+                'secret_key': "bOc-w-fxToGR-9gn25sc3L9j0DTvsoTpeCJxSY7i_v4="
             }
         }

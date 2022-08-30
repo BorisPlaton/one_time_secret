@@ -12,7 +12,7 @@ class ProjectSettings(BaseSettings):
         allow_mutation = False
 
 
-settings = ProjectSettings(
+settings: ProjectSettings = ProjectSettings(
     _env_file='.env',
     _env_file_encoding='utf-8'
 )
