@@ -1,4 +1,5 @@
 from motor.core import AgnosticCollection
+from pymongo.results import InsertOneResult
 
 from database.db import MongoDB
 
@@ -23,17 +24,22 @@ class SecretsCollection:
         """
         return await self.collection.find_one(filters)
 
-    async def add_secret(self, secret: str, passphrase: str, secret_key: str, **kwargs):
+    async def add_secret(self, secret: str, passphrase: str, **kwargs) -> InsertOneResult:
         """
-        Store the `secret` with given `secret_key`.
+        Store the `secret` with `passphrase`.
         """
         secret_dict = {
             "secret": secret,
             "passphrase": passphrase,
-            "secret_key": secret_key,
             **kwargs
         }
         return await self.collection.insert_one(secret_dict)
+
+    async def delete(self, filters: dict):
+        """
+        Deletes document from database by given filters.
+        """
+        return await self.collection.delete_one(filters)
 
     @property
     def collection(self) -> AgnosticCollection:

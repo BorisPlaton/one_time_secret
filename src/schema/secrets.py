@@ -22,7 +22,7 @@ class Passphrase(BaseModel):
     class Config:
         schema_extra = {
             'example': {
-                'passphrase': "This will unlock the stored secret",
+                'passphrase': "This will return the stored secret",
             }
         }
 
@@ -53,6 +53,6 @@ class SecretKey(BaseModel):
     class Config:
         schema_extra = {
             'example': {
-                'secret_key': "bOc-w-fxToGR-9gn25sc3L9j0DTvsoTpeCJxSY7i_v4="
+                'secret_key': "630f871784705aa71edcf1d8"
             }
         }

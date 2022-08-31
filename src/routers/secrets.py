@@ -4,7 +4,8 @@ from starlette import status
 from database.collections import SecretsCollection
 from schema.secrets import Secret, UserSecret, Passphrase, SecretKey
 
-from services.data_cryptography import get_secret_key, encrypt_user_secret
+from services.data_cryptography import encrypt_user_secret
+from services.operations import get_decrypted_secret_and_delete_from_db
 
 
 router = APIRouter(
@@ -32,10 +33,11 @@ async def generate_secret_key(user_secret: UserSecret):
     - **passphrase** - A passphrase that in future can unlock the secret
     Client will receive a `json` with a **secret_key**.
     """
-    secret_key = get_secret_key()
-    encrypted_secret, encrypted_passphrase = encrypt_user_secret(user_secret, secret_key)
-    await SecretsCollection().add_secret(encrypted_secret, encrypted_passphrase, secret_key)
-    return SecretKey(secret_key=secret_key)
+    encrypted_secret, encrypted_passphrase = encrypt_user_secret(
+        user_secret.secret, user_secret.passphrase
+    )
+    added_secret = await SecretsCollection().add_secret(encrypted_secret, encrypted_passphrase)
+    return SecretKey(secret_key=str(added_secret.inserted_id))
 
 
 @router.post(
@@ -50,24 +52,24 @@ async def generate_secret_key(user_secret: UserSecret):
             "description": "Invalid passphrase provided.",
             "content": {
                 "application/json": {
-                    "example": {"detail": "`Wrong passphrase` isn't the correct passphrase."}
+                    "example": {"detail": "Wrong passphrase."}
                 }
             }
         },
         "404": {
-            "description": "Secret key isn't correct.",
+            "description": "Invalid secret key provided.",
             "content": {
                 "application/json": {
-                    "example": {"detail": "`Wrong secret key` isn't the correct secret key."}
+                    "example": {"detail": "Invalid secret key."}
                 }
             }
-        }
+        },
     }
 )
 async def get_user_secret(
         passphrase: Passphrase,
         secret_key: str = Path(
-            ..., example="bOc-w-fxToGR-9gn25sc3L9j0DTvsoTpeCJxSY7i_v4="
+            ..., example="630f871784705aa71edcf1d8"
         ),
 ):
     """
@@ -82,3 +84,5 @@ async def get_user_secret(
     If all credentials are correct the service will return a user's
     secret and deletes it from the tests_database.
     """
+    user_secret = await get_decrypted_secret_and_delete_from_db(passphrase.passphrase, secret_key)
+    return Secret(secret=user_secret)
