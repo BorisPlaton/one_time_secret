@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Path
 from starlette import status
 
-from database.collections import SecretsCollection
 from schema.secrets import Secret, UserSecret, Passphrase, SecretKey
 
-from services.data_cryptography import encrypt_user_secret
-from services.operations import get_decrypted_secret_and_delete_from_db
+from services.operations import (
+    get_decrypted_secret_and_delete_from_db,
+    encrypt_user_secret_and_add_to_db
+)
 
 
 router = APIRouter(
@@ -33,11 +34,8 @@ async def generate_secret_key(user_secret: UserSecret):
     - **passphrase** - A passphrase that in future can unlock the secret
     Client will receive a `json` with a **secret_key**.
     """
-    encrypted_secret, encrypted_passphrase = encrypt_user_secret(
-        user_secret.secret, user_secret.passphrase
-    )
-    added_secret = await SecretsCollection().add_secret(encrypted_secret, encrypted_passphrase)
-    return SecretKey(secret_key=str(added_secret.inserted_id))
+    added_secret_id = await encrypt_user_secret_and_add_to_db(user_secret.secret, user_secret.passphrase)
+    return SecretKey(secret_key=added_secret_id)
 
 
 @router.post(

@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from starlette import status
 
 from database.collections import SecretsCollection
-from services.data_cryptography import decrypt_data
+from services.data_cryptography import decrypt_data, encrypt_data
 
 
 def get_object_id_or_404(secret_key: str | bytes) -> ObjectId:
@@ -28,3 +28,16 @@ async def get_decrypted_secret_and_delete_from_db(passphrase: str, secret_key: s
     decrypted_secret = decrypt_data(secret_data['secret'])
     await secrets_collection.delete(secret_filter)
     return decrypted_secret
+
+
+async def encrypt_user_secret_and_add_to_db(secret: str, passphrase: str) -> str:
+    """
+    Encrypts a user secret with a given passphrase and add to the db.
+    Returns an inserted object id.
+    """
+    encrypted_secret, encrypted_passphrase = (
+        encrypt_data(secret),
+        encrypt_data(passphrase)
+    )
+    added_secret = await SecretsCollection().add_secret(encrypted_secret, encrypted_passphrase)
+    return str(added_secret.inserted_id)

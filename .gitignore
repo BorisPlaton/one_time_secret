@@ -4,3 +4,4 @@ __pycache__
 src/.env
 .pytest_cache
 .coverage
+htmlcov

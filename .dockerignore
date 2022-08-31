@@ -1,0 +1,17 @@
+.git
+.gitignore
+.idea
+venv
+Dockerfile
+setup.cfg
+docker-compose.yml
+requirements/*
+!requirements/prod.txt
+
+**/__pycache__
+**/.pytest_cache
+**/htmlcov
+**/tests
+**/.coveragerc
+**/.coverage
+**/.env.dist

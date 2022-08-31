@@ -1,3 +1,5 @@
+import os
+
 from cryptography.fernet import Fernet
 from pydantic import BaseSettings
 
@@ -9,6 +11,7 @@ class ProjectSettings(BaseSettings):
     port: int = 8000
     mongo_location: str = 'mongodb://127.0.0.1:27017'
     secret_key: str = Fernet.generate_key()
+    development: bool = os.getenv('DEVELOPMENT') == '1'
 
     class Config:
         allow_mutation = False

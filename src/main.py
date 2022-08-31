@@ -30,5 +30,5 @@ if __name__ == '__main__':
         factory=True,
         host=settings.host,
         port=settings.port,
-        reload=True
+        reload=settings.development
     )

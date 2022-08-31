@@ -89,14 +89,28 @@ async def test_get_secret_from_collection_with_filters(secrets_collection):
 @pytest.mark.asyncio
 async def test_get_secret_from_collection_without_filters(secrets_collection):
     secrets_data = [
-        ("some secret", "it will work", "1234dafar2"),
-        ("some secret2", "1", "123fafas4"),
-        ("415dae315", "-", "1234232"),
-        ("-", "it__________", "12345"),
-        ("1", "3", "1234"),
+        ("some secret", "it will work"),
+        ("some secret2", "1"),
+        ("415dae315", "-"),
+        ("-", "it__________"),
+        ("1", "3"),
     ]
-    for secret, passphrase, secret_key in secrets_data:
-        await secrets_collection.add_secret(secret, passphrase,)
+    for secret, passphrase in secrets_data:
+        await secrets_collection.add_secret(secret, passphrase)
     secrets_without_filter = await secrets_collection.get_secret()
     secrets_list = await secrets_collection.get_secrets()
     assert secrets_without_filter == secrets_list[0]
+
+
+@pytest.mark.asyncio
+async def test_delete_secret_with_filters(secrets_collection):
+    assert not len(await secrets_collection.get_secrets())
+    secrets_data = [
+        ("some secret", "it will work"),
+        ("some secret2", "1"),
+    ]
+    for secret, passphrase in secrets_data:
+        await secrets_collection.add_secret(secret, passphrase)
+    assert len(await secrets_collection.get_secrets()) == 2
+    await secrets_collection.delete({"secret": {"$regex": "some *"}})
+    assert len(await secrets_collection.get_secrets()) == 1

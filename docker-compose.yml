@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  one_time_secret:
+    build: .
+    image: one_time_secret
+    container_name: one_time_secret_container
+    environment:
+      - MONGO_LOCATION=mongodb://mongo:27017
+      - DEVELOPMENT=0
+      - HOST=0.0.0.0
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    command: python src/main.py
+  mongo:
+    image: mongo
