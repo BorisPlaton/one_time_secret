@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from starlette import status
 
 from database.collections import SecretsCollection
+from schema.secrets import UserSecret
 from services.data_cryptography import decrypt_data, encrypt_data
 
 
@@ -30,14 +31,19 @@ async def get_decrypted_secret_and_delete_from_db(passphrase: str, secret_key: s
     return decrypted_secret
 
 
-async def encrypt_user_secret_and_add_to_db(secret: str, passphrase: str) -> str:
+async def encrypt_user_secret_and_add_to_db(user_secret: UserSecret) -> str:
     """
     Encrypts a user secret with a given passphrase and add to the db.
     Returns an inserted object id.
     """
     encrypted_secret, encrypted_passphrase = (
-        encrypt_data(secret),
-        encrypt_data(passphrase)
+        encrypt_data(user_secret.secret),
+        encrypt_data(user_secret.passphrase)
     )
-    added_secret = await SecretsCollection().add_secret(encrypted_secret, encrypted_passphrase)
+    additional_fields = {}
+    if user_secret.time_to_live:
+        v = additional_fields['created'] = user_secret.time_to_live.get_expiration_time()
+    added_secret = await SecretsCollection().add_secret(
+        encrypted_secret, encrypted_passphrase, **additional_fields
+    )
     return str(added_secret.inserted_id)

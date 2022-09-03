@@ -1,33 +1,18 @@
 #!/usr/bin/env python
+import asyncio
+
 import uvicorn
-from fastapi import FastAPI
 
 from config.settings import settings
-from routers.secrets import router as secrets_router
+from utils.setup import configure_project, create_app
 
 
-def create_app():
-    """Creates instance of FastAPI class"""
-    app_ = FastAPI(
-        title="One time Secret",
-        version="0.1",
-        description="Service provides an opportunity to store your "
-                    "one time secrets.",
-        openapi_tags=[
-            {
-                "name": "Secrets",
-                "description": "Operations with storing and retrieving users' secrets."
-            }
-        ]
-    )
-    app_.include_router(secrets_router)
-    return app_
-
+app = create_app()
 
 if __name__ == '__main__':
+    asyncio.run(configure_project())
     uvicorn.run(
-        "main:create_app",
-        factory=True,
+        "main:app",
         host=settings.host,
         port=settings.port,
         reload=settings.development

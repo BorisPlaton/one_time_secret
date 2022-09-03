@@ -10,6 +10,13 @@ class SecretsCollection:
     operations to communicate with it.
     """
 
+    async def create_ttl_index_on(self, index_field='created'):
+        """
+        Sets TTL-index on the `index_field` which is a field name
+        of the document.
+        """
+        return await self.collection.create_index(index_field, expireAfterSeconds=1)
+
     async def get_secrets(self, filters: dict = None) -> list[dict]:
         """
         Return all students in db. If a `filters` parameter

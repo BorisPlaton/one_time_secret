@@ -9,9 +9,10 @@ class ProjectSettings(BaseSettings):
 
     host: str = '127.0.0.1'
     port: int = 8000
-    mongo_location: str = 'mongodb://127.0.0.1:27017'
     secret_key: str = Fernet.generate_key()
     development: bool = os.getenv('DEVELOPMENT') == '1'
+
+    mongo_location: str = 'mongodb://127.0.0.1:27017'
 
     class Config:
         allow_mutation = False

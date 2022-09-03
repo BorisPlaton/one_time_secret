@@ -114,3 +114,34 @@ async def test_delete_secret_with_filters(secrets_collection):
     assert len(await secrets_collection.get_secrets()) == 2
     await secrets_collection.delete({"secret": {"$regex": "some *"}})
     assert len(await secrets_collection.get_secrets()) == 1
+
+
+@pytest.mark.asyncio
+async def test_default_ttl_index_name(secrets_collection):
+    indexes_keys = []
+    await secrets_collection.create_ttl_index_on()
+    indexes_data: dict = await secrets_collection.collection.index_information()
+    for index_data in indexes_data.values():
+        indexes_keys.append(index_data['key'][0][0])
+    assert 'created' in indexes_keys
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    'index_field',
+    (
+        'ffaf',
+        'f',
+        'for field',
+        'dqarq',
+        '31z',
+        's3141s',
+    )
+)
+async def test_default_ttl_index_name(secrets_collection, index_field):
+    indexes_keys = []
+    await secrets_collection.create_ttl_index_on(index_field)
+    indexes_data: dict = await secrets_collection.collection.index_information()
+    for index_data in indexes_data.values():
+        indexes_keys.append(index_data['key'][0][0])
+    assert index_field in indexes_keys

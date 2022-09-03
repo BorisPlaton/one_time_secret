@@ -3,7 +3,7 @@ from starlette import status
 
 from schema.secrets import Secret, UserSecret, Passphrase, SecretKey
 
-from services.operations import (
+from services.secrets import (
     get_decrypted_secret_and_delete_from_db,
     encrypt_user_secret_and_add_to_db
 )
@@ -32,9 +32,18 @@ async def generate_secret_key(user_secret: UserSecret):
     two keys:
     - **secret** - A secret that will be stored
     - **passphrase** - A passphrase that in future can unlock the secret
+    - **time_to_live (Optional)** - Specifies a time range which your secret will live.
+    You can skip several of the following parameters but at least one must be specified.
+    If the option is not provided the secret will be stored forever.
+        - **months** - Months to live
+        - **days** - Days to live
+        - **hours** - Hours to live
+        - **minutes** - Minutes to live
+        - **seconds** - Seconds to live
+
     Client will receive a `json` with a **secret_key**.
     """
-    added_secret_id = await encrypt_user_secret_and_add_to_db(user_secret.secret, user_secret.passphrase)
+    added_secret_id = await encrypt_user_secret_and_add_to_db(user_secret)
     return SecretKey(secret_key=added_secret_id)
 
 
