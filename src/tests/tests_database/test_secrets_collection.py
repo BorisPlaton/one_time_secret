@@ -138,7 +138,7 @@ async def test_default_ttl_index_name(secrets_collection):
         's3141s',
     )
 )
-async def test_default_ttl_index_name(secrets_collection, index_field):
+async def test_specified_ttl_index_name(secrets_collection, index_field):
     indexes_keys = []
     await secrets_collection.create_ttl_index_on(index_field)
     indexes_data: dict = await secrets_collection.collection.index_information()

@@ -42,7 +42,7 @@ async def encrypt_user_secret_and_add_to_db(user_secret: UserSecret) -> str:
     )
     additional_fields = {}
     if user_secret.time_to_live:
-        v = additional_fields['created'] = user_secret.time_to_live.get_expiration_time()
+        additional_fields['created'] = user_secret.time_to_live.get_expiration_time()
     added_secret = await SecretsCollection().add_secret(
         encrypted_secret, encrypted_passphrase, **additional_fields
     )

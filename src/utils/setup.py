@@ -12,7 +12,7 @@ async def configure_project():
 def create_app():
     """Creates instance of FastAPI class"""
     app = FastAPI(
-        title="One time Secret",
+        title="One time secret",
         version="0.1",
         description="Service provides an opportunity to store your "
                     "one time secrets.",

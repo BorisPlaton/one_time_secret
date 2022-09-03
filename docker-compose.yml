@@ -15,3 +15,9 @@ services:
     command: python src/main.py
   mongo:
     image: mongo
+    logging:
+      driver: "none"
+    volumes:
+      - mongo_data:/data/db
+volumes:
+  mongo_data:

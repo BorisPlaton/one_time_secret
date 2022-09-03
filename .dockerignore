@@ -1,10 +1,12 @@
 .git
 .gitignore
 .idea
+.env.dist
 venv
 Dockerfile
 setup.cfg
 docker-compose.yml
+README.md
 requirements/*
 !requirements/prod.txt
 
@@ -14,4 +16,3 @@ requirements/*
 **/tests
 **/.coveragerc
 **/.coverage
-**/.env.dist

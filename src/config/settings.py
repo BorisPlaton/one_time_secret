@@ -5,7 +5,10 @@ from pydantic import BaseSettings
 
 
 class ProjectSettings(BaseSettings):
-    """Project configuration."""
+    """
+    Project configuration. Values may be overwritten by
+    environment variables.
+    """
 
     host: str = '127.0.0.1'
     port: int = 8000

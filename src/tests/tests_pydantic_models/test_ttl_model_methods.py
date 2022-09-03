@@ -6,7 +6,7 @@ from schema.secrets import TimeToLive
 
 
 def test_at_least_one_value_provided():
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError):
         TimeToLive()
 
 

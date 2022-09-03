@@ -23,20 +23,8 @@ class Passphrase(BaseModel):
 
     class Config:
         schema_extra = {
-            'examples': {
-                "With time to live": {
-                    'secret': "Some secret phrase",
-                    'passphrase': "This will return the stored secret",
-                    'time_to_live': {
-                        'months': 4,
-                        'days': 2,
-                        'seconds': 34,
-                    },
-                },
-                "Plain secret": {
-                    'secret': "Some secret phrase",
-                    'passphrase': "This will return the stored secret",
-                }
+            'example': {
+                'passphrase': "This will return the stored secret",
             }
         }
 
@@ -75,7 +63,6 @@ class TimeToLive(BaseModel):
         """
         provided_values = {key: value for key, value in self.dict().items() if value and key != 'months'}
         provided_values.update({'days': provided_values.get('days', 0) + self.convert_month_to_days()})
-        print(provided_values)
 
         return datetime.datetime.utcnow() + datetime.timedelta(**provided_values)
 
